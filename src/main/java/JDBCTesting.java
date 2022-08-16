@@ -10,29 +10,27 @@ public class JDBCTesting {
         Connection con;
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            System.out.println("Driver loaded!");
         }
         catch (ClassNotFoundException e){
             throw new IllegalStateException("Cannot find the driver in ths classpath!",e);
         }
 
-        listDrivers();
 
         try{
-            System.out.println("Connecting to database: "+URL);
             con = DriverManager.getConnection(URL, USER, PASS);
-            System.out.println("Connection is successful!!!! "+con);
+            Statement statement = con.createStatement();
+         ResultSet result =  statement.executeQuery("select * from employee_payroll");
+         while(result.next()){
+             System.out.println(result.getInt("id")+" " +
+                     result.getString(2) +" "+
+                     result.getString(3)+ " "+
+                     result.getDouble(4)+" "+
+                     result.getDate(5));
+         }
         }
         catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    private static void listDrivers() {
-        Enumeration<Driver> driverList = DriverManager.getDrivers();
-        while(driverList.hasMoreElements()){
-            Driver driverClass = driverList.nextElement();
-            System.out.println(" "+driverClass.getClass().getName());
-        }
-    }
 }
