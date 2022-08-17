@@ -1,5 +1,5 @@
-
 import java.sql.*;
+import java.util.Scanner;
 
 public class JDBCTesting {
     public static void main(String[] args) {
@@ -15,9 +15,11 @@ public class JDBCTesting {
 
         try {
             con = DriverManager.getConnection(URL, USER, PASS);
-            Statement statement = con.createStatement();
-            statement.execute("update employee_payroll set salary=160000 where name='Mark'");
-            ResultSet resultSet = statement.executeQuery("select * from employee_payroll");
+            PreparedStatement preparedStatement = con.prepareStatement("update employee_payroll set salary=? where name=?");
+            preparedStatement.setDouble(1,100000);
+            preparedStatement.setString(2,"Mark");
+            preparedStatement.execute();
+            ResultSet resultSet = preparedStatement.executeQuery("select * from employee_payroll");
             while (resultSet.next()) {
                 System.out.println(resultSet.getInt("id") + " " +
                         resultSet.getString(2) + " " +
@@ -25,8 +27,10 @@ public class JDBCTesting {
                         resultSet.getDouble(4) + " " +
                         resultSet.getDate(5));
             }
+            con.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }
